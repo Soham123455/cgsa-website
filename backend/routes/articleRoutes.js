@@ -21,8 +21,7 @@ router.post(
   createArticle
 );
 
-// Get All Articles
-router.post("/", createArticle);
+
 
 router.get("/", getArticles);
 
