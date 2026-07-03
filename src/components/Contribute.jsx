@@ -68,9 +68,9 @@ function Contribute() {
     }
 
     try {
-      const response = await axios.post(
+const response = await axios.post(
   `${API_BASE_URL}/api/articles`,
-  formData
+  data
 );
 
       if (response.data.success) {
