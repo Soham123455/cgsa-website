@@ -69,7 +69,7 @@ function Contribute() {
 
     try {
       const response = await axios.post(
-  "http://localhost:5000/api/articles",
+  `${API_BASE_URL}/api/articles`,
   formData
 );
 
