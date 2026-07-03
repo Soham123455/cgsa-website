@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 function Contribute() {
   const initialForm = {
@@ -68,14 +69,9 @@ function Contribute() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/articles",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  "http://localhost:5000/api/articles",
+  formData
+);
 
       if (response.data.success) {
         setSubmitted(true);

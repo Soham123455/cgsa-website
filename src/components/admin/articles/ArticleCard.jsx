@@ -1,3 +1,4 @@
+import API_BASE_URL from "../../../config/api";
 import {
   User,
   Mail,
@@ -52,7 +53,7 @@ function ArticleCard({
 
         {article.coverImage && (
           <a
-            href={`http://localhost:5000/uploads/${article.coverImage}`}
+            src={`${API_BASE_URL}/uploads/${article.coverImage}`}
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-2 text-green-700 hover:underline"
@@ -64,7 +65,7 @@ function ArticleCard({
 
         {article.pdfFile && (
           <a
-            href={`http://localhost:5000/uploads/${article.pdfFile}`}
+            href={`${API_BASE_URL}/uploads/${article.pdf}`}
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-2 text-blue-700 hover:underline"
