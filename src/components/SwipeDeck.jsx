@@ -40,39 +40,91 @@ function SwipeDeck({ articles }) {
   return (
     <div
       className="
-      relative
-      mx-auto
-      w-[420px]
-      h-[720px]
+        relative
+        mx-auto
+        w-[1200px]
+        h-[720px]
+        flex
+        items-center
+        justify-center
+        overflow-hidden
       "
     >
-      <AnimatePresence mode="popLayout">
-        {visibleCards
-          .slice()
-          .reverse()
-          .map((article, reverseIndex) => {
-            const index = 2 - reverseIndex;
+      {/* LEFT PREVIEW */}
+      <div
+        className="
+          absolute
+          left-0
+          scale-[0.82]
+          opacity-40
+          blur-[1px]
+          pointer-events-none
+          transition-all
+          duration-500
+          animate-[float_5s_ease-in-out_infinite]
+        "
+      >
+        <SwipeCard
+          article={
+            articles[(current - 1 + articles.length) % articles.length]
+          }
+          index={0}
+          isTop={false}
+        />
+      </div>
 
-            return (
-              <SwipeCard
-                key={`${article.id}-${current}`}
-                article={article}
-                index={index}
-                isTop={index === 0}
-                x={x}
-                rotate={rotate}
-                opacity={opacity}
-                onDragEnd={(event, info) => {
-                  if (Math.abs(info.offset.x) > 140) {
-                    nextArticle();
-                  } else {
-                    x.set(0);
-                  }
-                }}
-              />
-            );
-          })}
-      </AnimatePresence>
+      {/* MAIN DECK */}
+      <div className="relative w-[420px] h-[720px] z-20">
+        <AnimatePresence mode="popLayout">
+          {visibleCards
+            .slice()
+            .reverse()
+            .map((article, reverseIndex) => {
+              const index = 2 - reverseIndex;
+
+              return (
+                <SwipeCard
+                  key={`${article.id}-${current}`}
+                  article={article}
+                  index={index}
+                  isTop={index === 0}
+                  x={x}
+                  rotate={rotate}
+                  opacity={opacity}
+                  onDragEnd={(event, info) => {
+                    if (Math.abs(info.offset.x) > 140) {
+                      nextArticle();
+                    } else {
+                      x.set(0);
+                    }
+                  }}
+                />
+              );
+            })}
+        </AnimatePresence>
+      </div>
+
+      {/* RIGHT PREVIEW */}
+      <div
+        className="
+          absolute
+          right-0
+          scale-[0.82]
+          opacity-40
+          blur-[1px]
+          pointer-events-none
+          transition-all
+          duration-500
+          animate-[float_5s_ease-in-out_infinite]
+        "
+        style={{ animationDelay: "2.5s" }}
+      >
+        <SwipeCard
+          article={articles[(current + 1) % articles.length]}
+          index={0}
+          isTop={false}
+        />
+      </div>
     </div>
   );
 }

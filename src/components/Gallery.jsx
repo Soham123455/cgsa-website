@@ -1,91 +1,73 @@
-import gallery1 from "../assets/gallery1.jpg";
-import gallery2 from "../assets/gallery2.jpg";
-import gallery3 from "../assets/gallery3.jpg";
-import gallery4 from "../assets/gallery4.jpg";
-import gallery5 from "../assets/gallery5.jpg";
-import gallery6 from "../assets/gallery6.jpg";
+import galleryImages from "../data/galleryImages";
+import { useTheme } from "../context/ThemeContext";
 
 function Gallery() {
-const gallery = [
-  {
-    image: gallery1,
-    title: "Paying Tribute to Mahatma Gandhi",
-  },
-  {
-    image: gallery2,
-    title: "The Charkha – Symbol of Swadeshi",
-  },
-  {
-    image: gallery3,
-    title: "Khadi and Rural Self-Reliance",
-  },
-  {
-    image: gallery4,
-    title: "Educational Visit by Students",
-  },
-  {
-    image: gallery5,
-    title: "Community Cleanliness Drive",
-  },
-  {
-    image: gallery6,
-    title: "Journey of India's Freedom Movement",
-  },
-];
+  const { theme } = useTheme();
+
+  const gallery = galleryImages.map((img, index) => ({
+  ...img,
+  height: [
+    "h-[260px]",
+    "h-[380px]",
+    "h-[300px]",
+    "h-[450px]",
+    "h-[280px]",
+    "h-[360px]",
+  ][index % 6],
+}));
 
   return (
-    <section id="gallery" className="py-24 bg-white">
-
+    <section
+      id="gallery"
+      className={`py-24 transition-colors duration-500 ${
+        theme === "dark" ? "bg-[#0F172A]" : "bg-white"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6">
-
         <div className="text-center mb-16">
-
-          <h2 className="text-5xl font-bold text-[#0B6E4F]">
+          <h2
+            className={`text-5xl font-bold transition-colors duration-500 ${
+              theme === "dark" ? "text-white" : "text-[#0B6E4F]"
+            }`}
+          >
             Gallery
           </h2>
 
-          <p className="mt-5 text-lg text-gray-600">
+          <p
+            className={`mt-5 text-lg transition-colors duration-500 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
             Capturing moments that celebrate Gandhian values, education,
             research and community engagement.
           </p>
-
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           {gallery.map((item, index) => (
-
             <div
               key={index}
-              className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500"
+              className="group relative overflow-hidden rounded-3xl shadow-xl break-inside-avoid cursor-pointer hover:-translate-y-2 transition-all duration-500"
             >
+              <img
+                src={item.image}
+                alt={item.title}
+                className={`w-full ${item.height} object-cover transition-all duration-700 group-hover:scale-110`}
+              />
 
-              <div className="overflow-hidden">
-
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-72 object-cover group-hover:scale-110 transition duration-700"
-                />
-
-              </div>
-
-              <div className="bg-white p-6">
-
-                <h3 className="text-xl font-semibold text-[#0B6E4F]">
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6">
+                <h3 className="text-white text-2xl font-bold">
                   {item.title}
                 </h3>
 
+                <button className="mt-4 w-fit px-5 py-2 rounded-full bg-white text-[#0B6E4F] font-semibold hover:scale-105 transition">
+                  View →
+                </button>
               </div>
-
             </div>
-
           ))}
-
         </div>
-
       </div>
-
     </section>
   );
 }

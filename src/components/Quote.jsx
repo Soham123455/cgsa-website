@@ -1,3 +1,5 @@
+import { useTheme } from "../context/ThemeContext";
+
 const quotes = [
   {
     text: "My life is my message.",
@@ -34,21 +36,37 @@ const quotes = [
 ];
 
 function Quote() {
+  const { theme } = useTheme();
+
   const randomQuote =
     quotes[Math.floor(Math.random() * quotes.length)];
 
   return (
-    <section className="py-24 bg-[#F8F5EF]">
-      <div className="max-w-5xl mx-auto px-6 text-center">
+    <section
+      className={`relative py-24 overflow-hidden transition-colors duration-500 ${
+        theme === "dark" ? "bg-black" : "bg-[#0B6E4F]"
+      }`}
+    >
+      <div className="max-w-5xl mx-auto px-6 text-center relative">
+        {/* Left Quote Mark */}
+        <div className="absolute left-0 top-0 text-[140px] text-white/10 font-serif leading-none select-none">
+          “
+        </div>
 
-        <h2 className="text-5xl italic text-[#0B6E4F] leading-relaxed">
+        {/* Right Quote Mark */}
+        <div className="absolute right-0 bottom-10 text-[140px] text-white/10 font-serif leading-none select-none">
+          ”
+        </div>
+
+        {/* Quote Text */}
+        <h2 className="text-5xl italic text-white leading-relaxed animate-fadeIn">
           "{randomQuote.text}"
         </h2>
 
-        <p className="mt-6 text-2xl font-medium text-gray-700">
+        {/* Author */}
+        <p className="mt-8 text-2xl font-semibold text-orange-300 tracking-wide animate-fadeUp">
           — {randomQuote.author}
         </p>
-
       </div>
     </section>
   );

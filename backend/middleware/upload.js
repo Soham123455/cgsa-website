@@ -29,24 +29,30 @@ const storage = multer.diskStorage({
 // Allowed file types
 const fileFilter = (req, file, cb) => {
 
-  if (file.fieldname === "coverImage") {
+  // Any image upload
+  if (
+    file.fieldname === "coverImage" ||
+    file.fieldname === "images"
+  ) {
 
     if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only image files allowed."));
+      return cb(null, true);
     }
 
-  } else if (file.fieldname === "pdfFile") {
-
-    if (file.mimetype === "application/pdf") {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF allowed."));
-    }
-
+    return cb(new Error("Only image files allowed."));
   }
 
+  // PDF upload
+  if (file.fieldname === "pdfFile") {
+
+    if (file.mimetype === "application/pdf") {
+      return cb(null, true);
+    }
+
+    return cb(new Error("Only PDF files allowed."));
+  }
+
+  return cb(new Error("Unsupported upload field."));
 };
 
 const upload = multer({
