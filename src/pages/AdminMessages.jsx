@@ -6,7 +6,7 @@ function AdminMessages() {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/messages");
+      const res = await fetch("https://cgsa-website.onrender.com/api/messages");
       const data = await res.json();
       setMessages(data);
     } catch (err) {
@@ -21,7 +21,7 @@ function AdminMessages() {
   const deleteMessage = async (id) => {
     if (!window.confirm("Delete this message?")) return;
 
-    await fetch(`http://localhost:5000/api/messages/${id}`, {
+    await fetch(`https://cgsa-website.onrender.com/api/messages/${id}`, {
       method: "DELETE",
     });
 
