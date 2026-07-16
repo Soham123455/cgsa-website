@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 
 const upload = require("../middleware/upload");
 
@@ -26,12 +27,22 @@ router.post(
 router.get("/", getArticles);
 
 // Approve Article
-router.put("/:id/approve", approveArticle);
+router.put(
+    "/:id/approve",
+    authMiddleware,
+    approveArticle
+);
 
-// Reject Article
-router.put("/:id/reject", rejectArticle);
+router.put(
+    "/:id/reject",
+    authMiddleware,
+    rejectArticle
+);
 
-// Delete Article
-router.delete("/:id", deleteArticle);
+router.delete(
+    "/:id",
+    authMiddleware,
+    deleteArticle
+);
 
 module.exports = router;

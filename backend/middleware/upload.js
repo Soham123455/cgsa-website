@@ -9,7 +9,9 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Storage configuration
+// ===========================
+// Storage Configuration
+// ===========================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -19,45 +21,85 @@ const storage = multer.diskStorage({
     const uniqueName =
       Date.now() + "-" + Math.round(Math.random() * 1e9);
 
-    cb(
-      null,
-      uniqueName + path.extname(file.originalname)
-    );
+    cb(null, uniqueName + path.extname(file.originalname));
   },
 });
 
-// Allowed file types
+// ===========================
+// Allowed MIME Types
+// ===========================
+const allowedImageTypes = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+const allowedPdfTypes = [
+  "application/pdf",
+];
+
+// ===========================
+// File Validation
+// ===========================
 const fileFilter = (req, file, cb) => {
 
-  // Any image upload
-  if (
-    file.fieldname === "coverImage" ||
-    file.fieldname === "images"
-  ) {
+  // Cover Image
+  if (file.fieldname === "coverImage") {
 
-    if (file.mimetype.startsWith("image/")) {
+    if (allowedImageTypes.includes(file.mimetype)) {
       return cb(null, true);
     }
 
-    return cb(new Error("Only image files allowed."));
+    return cb(
+      new Error(
+        "Only JPG, JPEG, PNG and WEBP images are allowed."
+      )
+    );
   }
 
-  // PDF upload
-  if (file.fieldname === "pdfFile") {
+  // Gallery Images
+  if (
+    file.fieldname === "images" ||
+    file.fieldname === "galleryImages"
+  ) {
 
-    if (file.mimetype === "application/pdf") {
+    if (allowedImageTypes.includes(file.mimetype)) {
       return cb(null, true);
     }
 
-    return cb(new Error("Only PDF files allowed."));
+    return cb(
+      new Error(
+        "Only JPG, JPEG, PNG and WEBP images are allowed."
+      )
+    );
+  }
+
+  // PDF
+  if (file.fieldname === "pdfFile") {
+
+    if (allowedPdfTypes.includes(file.mimetype)) {
+      return cb(null, true);
+    }
+
+    return cb(
+      new Error("Only PDF files are allowed.")
+    );
   }
 
   return cb(new Error("Unsupported upload field."));
 };
 
+// ===========================
+// Multer Upload
+// ===========================
 const upload = multer({
   storage,
   fileFilter,
+
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB
+  },
 });
 
 module.exports = upload;

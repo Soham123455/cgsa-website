@@ -1,10 +1,12 @@
 const Article = require("../models/Article");
+const validator = require("validator");
 
-// Create Article
+// ==========================
+// CREATE ARTICLE
+// ==========================
 exports.createArticle = async (req, res) => {
   try {
-
-    const {
+    let {
       fullName,
       email,
       department,
@@ -14,8 +16,69 @@ exports.createArticle = async (req, res) => {
       content,
     } = req.body;
 
-    const article = await Article.create({
+    // Sanitize Inputs
+    fullName = validator.escape(fullName?.trim() || "");
+    email = email?.trim() || "";
+    department = validator.escape(department?.trim() || "");
+    category = validator.escape(category?.trim() || "");
+    title = validator.escape(title?.trim() || "");
+    abstract = validator.escape(abstract?.trim() || "");
+    content = validator.escape(content?.trim() || "");
 
+    // Required Fields
+    if (
+      !fullName ||
+      !email ||
+      !department ||
+      !category ||
+      !title ||
+      !abstract ||
+      !content
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required.",
+      });
+    }
+
+    // Email Validation
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email address.",
+      });
+    }
+
+    // Length Validation
+    if (fullName.length > 50) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is too long.",
+      });
+    }
+
+    if (title.length > 150) {
+      return res.status(400).json({
+        success: false,
+        message: "Title is too long.",
+      });
+    }
+
+    if (abstract.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "Abstract is too long.",
+      });
+    }
+
+    if (content.length > 10000) {
+      return res.status(400).json({
+        success: false,
+        message: "Content exceeds maximum length.",
+      });
+    }
+
+    const article = await Article.create({
       fullName,
       email,
       department,
@@ -32,6 +95,7 @@ exports.createArticle = async (req, res) => {
         ? req.files.pdfFile[0].filename
         : "",
 
+      status: "Pending",
     });
 
     res.status(201).json({
@@ -41,84 +105,18 @@ exports.createArticle = async (req, res) => {
     });
 
   } catch (error) {
-
     console.error(error);
 
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 
-exports.approveArticle = async (req, res) => {
-  try {
-    const article = await Article.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: "Approved",
-      },
-      { new: true }
-    );
-
-    res.json({
-      success: true,
-      message: "Article Approved",
-      article,
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-exports.rejectArticle = async (req, res) => {
-  try {
-    const article = await Article.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: "Rejected",
-      },
-      { new: true }
-    );
-
-    res.json({
-      success: true,
-      message: "Article Rejected",
-      article,
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-exports.deleteArticle = async (req, res) => {
-  try {
-    await Article.findByIdAndDelete(req.params.id);
-
-    res.json({
-      success: true,
-      message: "Article Deleted",
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-// Get All Articles
+// ==========================
+// GET ALL ARTICLES
+// ==========================
 exports.getArticles = async (req, res) => {
   try {
     const articles = await Article.find().sort({
@@ -130,69 +128,100 @@ exports.getArticles = async (req, res) => {
       count: articles.length,
       articles,
     });
+
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
-// Approve Article
+// ==========================
+// APPROVE ARTICLE
+// ==========================
 exports.approveArticle = async (req, res) => {
   try {
+
     const article = await Article.findByIdAndUpdate(
       req.params.id,
-      { status: "Approved" },
-      { new: true }
+      {
+        status: "Approved",
+      },
+      {
+        new: true,
+      }
     );
 
     res.json({
       success: true,
+      message: "Article Approved",
       article,
     });
-  } catch (err) {
+
+  } catch (error) {
+
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: error.message,
     });
+
   }
 };
 
-// Reject Article
+// ==========================
+// REJECT ARTICLE
+// ==========================
 exports.rejectArticle = async (req, res) => {
   try {
+
     const article = await Article.findByIdAndUpdate(
       req.params.id,
-      { status: "Rejected" },
-      { new: true }
+      {
+        status: "Rejected",
+      },
+      {
+        new: true,
+      }
     );
 
     res.json({
       success: true,
+      message: "Article Rejected",
       article,
     });
-  } catch (err) {
+
+  } catch (error) {
+
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: error.message,
     });
+
   }
 };
 
-// Delete Article
+// ==========================
+// DELETE ARTICLE
+// ==========================
 exports.deleteArticle = async (req, res) => {
   try {
+
     await Article.findByIdAndDelete(req.params.id);
 
     res.json({
       success: true,
-      message: "Deleted Successfully",
+      message: "Article Deleted Successfully",
     });
-  } catch (err) {
+
+  } catch (error) {
+
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: error.message,
     });
+
   }
 };

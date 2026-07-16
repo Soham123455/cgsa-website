@@ -1,19 +1,61 @@
 const Message = require("../models/Message");
-
+const validator = require("validator");
 exports.createMessage = async (req, res) => {
-    try {
+  try {
 
-        const message = await Message.create(req.body);
+    let { name, email, message } = req.body;
 
-        res.status(201).json(message);
+    name = validator.escape(name?.trim() || "");
+    email = email?.trim() || "";
+    message = validator.escape(message?.trim() || "");
 
-    } catch (err) {
-
-        res.status(500).json({
-            error: err.message,
-        });
-
+    // Required Fields
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required."
+      });
     }
+
+    // Email Validation
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email address."
+      });
+    }
+
+    // Length Checks
+    if (name.length > 50) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is too long."
+      });
+    }
+
+    if (message.length > 1000) {
+      return res.status(400).json({
+        success: false,
+        message: "Message is too long."
+      });
+    }
+
+    const savedMessage = await Message.create({
+      name,
+      email,
+      message,
+    });
+
+    res.status(201).json(savedMessage);
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+
+  }
 };
 
 exports.getMessages = async (req, res) => {
