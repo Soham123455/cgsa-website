@@ -130,3 +130,4 @@ function SwipeDeck({ articles }) {
 }
 
 export default SwipeDeck;
+
