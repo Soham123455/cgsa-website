@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const articleRoutes = require("./routes/articleRoutes");
 const galleryRoutes = require("./routes/galleryRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -24,7 +25,7 @@ app.use(
 
 app.use("/api/articles", articleRoutes);
 app.use("/api/gallery", galleryRoutes);
-
+app.use("/api/messages",messageRoutes);
 // Test Route
 app.get("/", (req, res) => {
   res.json({

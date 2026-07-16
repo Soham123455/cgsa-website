@@ -31,7 +31,7 @@ function Contact() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -48,14 +48,29 @@ function Contact() {
       return;
     }
 
-    console.log(formData);
+    try {
+      const response = await fetch("http://localhost:5000/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setSubmitted(true);
-    setFormData(initialForm);
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
 
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
+      setSubmitted(true);
+      setFormData(initialForm);
+
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send message.");
+    }
   };
 
   return (
@@ -90,7 +105,9 @@ function Contact() {
         )}
 
         <div className="grid md:grid-cols-2 gap-12">
+
           {/* Information Card */}
+
           <div
             className={`rounded-2xl shadow-lg p-10 transition-colors duration-500 ${
               theme === "dark" ? "bg-[#1E293B]" : "bg-white"
@@ -111,6 +128,7 @@ function Contact() {
             >
               <div>
                 <h4 className="font-semibold">Address</h4>
+
                 <div className="mt-1">
                   <a
                     href="https://maps.google.com/?q=Opposite+Bhandup+Railway+Station,+Veer+Savarkar+Marg,+Bhandup+East,+Mumbai+400042"
@@ -129,6 +147,7 @@ function Contact() {
                     Maharashtra, India
                   </a>
                 </div>
+
                 <a
                   href="https://maps.google.com/?q=Opposite+Bhandup+Railway+Station,+Veer+Savarkar+Marg,+Bhandup+East,+Mumbai+400042"
                   target="_blank"
@@ -140,9 +159,13 @@ function Contact() {
               </div>
 
               <div>
-                <h4 className="font-semibold">Email</h4> 
+                <h4 className="font-semibold">Email</h4>
+
                 <p className="mt-1">
-                  <a href="mailto:info@menoncollege.edu.in" className="hover:opacity-80 transition">
+                  <a
+                    href="mailto:info@menoncollege.edu.in"
+                    className="hover:opacity-80 transition"
+                  >
                     info@menoncollege.edu.in
                   </a>
                 </p>
@@ -150,23 +173,30 @@ function Contact() {
 
               <div>
                 <h4 className="font-semibold">Phone</h4>
+
                 <p>
-                  <a href="tel:+912225661897" className="hover:opacity-80 transition">
+                  <a
+                    href="tel:+912225661897"
+                    className="hover:opacity-80 transition"
+                  >
                     022-2566-18-97
                   </a>
-                  <p>
-                  <a href="tel:+9102225668541" className="hover:opacity-80 transition">
+                </p>
+
+                <p>
+                  <a
+                    href="tel:+912225668541"
+                    className="hover:opacity-80 transition"
+                  >
                     022-2566-85-41
                   </a>
-                  </p>
                 </p>
               </div>
-
-              
             </div>
           </div>
 
-          {/* Form Card */}
+          {/* Contact Form */}
+
           <div
             className={`rounded-2xl shadow-lg p-10 transition-colors duration-500 ${
               theme === "dark" ? "bg-[#1E293B]" : "bg-white"
@@ -181,13 +211,14 @@ function Contact() {
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+
               <input
                 type="text"
                 name="name"
+                placeholder="Your Name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Your Name"
-                className={`w-full border rounded-lg p-3 transition-colors ${
+                className={`w-full border rounded-lg p-3 ${
                   theme === "dark"
                     ? "bg-[#374151] text-white border-gray-600 placeholder-gray-400"
                     : "bg-white text-black placeholder-gray-500"
@@ -197,10 +228,10 @@ function Contact() {
               <input
                 type="email"
                 name="email"
+                placeholder="Your Email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Your Email"
-                className={`w-full border rounded-lg p-3 transition-colors ${
+                className={`w-full border rounded-lg p-3 ${
                   theme === "dark"
                     ? "bg-[#374151] text-white border-gray-600 placeholder-gray-400"
                     : "bg-white text-black placeholder-gray-500"
@@ -210,10 +241,10 @@ function Contact() {
               <textarea
                 rows="6"
                 name="message"
+                placeholder="Your Message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Your Message"
-                className={`w-full border rounded-lg p-3 transition-colors ${
+                className={`w-full border rounded-lg p-3 ${
                   theme === "dark"
                     ? "bg-[#374151] text-white border-gray-600 placeholder-gray-400"
                     : "bg-white text-black placeholder-gray-500"
@@ -226,7 +257,9 @@ function Contact() {
               >
                 Send Message
               </button>
+
             </form>
+
           </div>
         </div>
       </div>
