@@ -27,22 +27,8 @@ router.post(
 router.get("/", getArticles);
 
 // Approve Article
-router.put(
-    "/:id/approve",
-    authMiddleware,
-    approveArticle
-);
-
-router.put(
-    "/:id/reject",
-    authMiddleware,
-    rejectArticle
-);
-
-router.delete(
-    "/:id",
-    authMiddleware,
-    deleteArticle
-);
+router.put("/:id/approve", approveArticle);
+router.put("/:id/reject", rejectArticle);
+router.delete("/:id", deleteArticle);
 
 module.exports = router;
